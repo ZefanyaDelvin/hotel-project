@@ -36,6 +36,9 @@ model Room {
   status       Status        @relation(fields: [statusId], references: [statusId])
   reservations Reservation[]
 
+  photoUrl     String?
+  videoUrl     String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

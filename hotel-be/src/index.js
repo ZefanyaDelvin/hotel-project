@@ -1,6 +1,12 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
+const cors = require("cors");
+const path = require("path");
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use(cors());
 
 app.use(express.json());
 
