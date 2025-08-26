@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId       String        @id @default(uuid())
+  userName     String
+  email        String        @unique
+  password     String
+  phoneNum     String
+  address      String
+  reservations Reservation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Room {
+  roomId       Int           @id @default(autoincrement())
+  roomNumber   Int
+  type         String
+  price        Float
+  statusId     Int        
+  status       Status        @relation(fields: [statusId], references: [statusId])
+  reservations Reservation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Reservation {
+  reservationId String   @id @default(uuid())
+  userId        String
+  roomId        Int
+  checkInDate   DateTime
+  checkOutDate  DateTime
+  status        String
+
+  user     User      @relation(fields: [userId], references: [userId])
+  room     Room      @relation(fields: [roomId], references: [roomId])
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment {
+  paymentId     String   @id @default(uuid())
+  reservationId String
+  paymentDate   DateTime
+  total         Float
+  paymentType   String
+
+  reservation Reservation @relation(fields: [reservationId], references: [reservationId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Status {
+  statusId   Int  @id @default(autoincrement())
+  statusName String @unique
+  rooms      Room[]
+}
