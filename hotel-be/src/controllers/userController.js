@@ -16,7 +16,7 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.createUser = async (req, res) => {
-  const { userName, email, phoneNum, address, password } = req.body;
+  const { userName, email, phoneNum, address, password, roleId } = req.body;
   try {
     /* VALIDATION */
     const isValidEmail = validateEmail(email);
@@ -39,11 +39,26 @@ exports.createUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await prisma.user.create({
-      data: { userName, email, phoneNum, address, password: hashedPassword },
+      data: {
+        userName,
+        email,
+        phoneNum,
+        address,
+        password: hashedPassword,
+        roleId,
+      },
+      include: { role: true },
     });
 
     // don’t send password back to client
     const { password: _, ...userWithoutPassword } = newUser;
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 1000, // 1 hour
+    });
 
     res
       .status(201)
@@ -56,7 +71,10 @@ exports.createUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: { role: true },
+    });
     if (!user) {
       throw new Error("User not found");
     }
@@ -77,14 +95,21 @@ exports.loginUser = async (req, res) => {
       userId: user.userId,
       userName: user.userName,
       email: user.email,
+      roleId: user.roleId,
+      roleName: user.role.roleName,
       token,
     };
 
     res.status(200).json({
       message: "Login successful",
-      data
+      data,
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
+};
+
+exports.logoutUser = (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logout successful" });
 };

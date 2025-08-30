@@ -1,7 +1,9 @@
-const login = () => {
-    return (
-        <h1>Login Page</h1>
-    )
-}
+import LoginForm from "./LoginForm";
 
-export default login
+export default function LoginPage() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <LoginForm />
+    </div>
+  );
+}

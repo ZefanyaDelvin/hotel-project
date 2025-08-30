@@ -2,8 +2,8 @@ import LoginButton from "@/components/Button/LoginButton";
 import RoomCard from "@/components/Card/RoomCard";
 import { Icon } from "@iconify/react";
 import { cookies } from "next/headers";
-import Image from "next/image";
 import HeroSection from "./HeroSection";
+import UserMenu from "./UserMenu";
 
 export default async function Home() {
   const cookieStore = await cookies();
@@ -31,13 +31,7 @@ export default async function Home() {
 
         {/* Right Section */}
         <div className="flex items-center space-x-6 text-[#FFF9AF] font-semibold">
-          {isLogin ? (
-            <button className="border rounded-full p-2">
-              <Icon icon="mdi:user" width="24" height="24" />
-            </button>
-          ) : (
-            <LoginButton />
-          )}
+          {isLogin ? <UserMenu /> : <LoginButton />}
         </div>
       </div>
 
