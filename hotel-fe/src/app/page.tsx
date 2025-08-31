@@ -1,50 +1,14 @@
-import LoginButton from "@/components/Button/LoginButton";
 import RoomCard from "@/components/Card/RoomCard";
-import { Icon } from "@iconify/react";
-import { cookies } from "next/headers";
+import MainLayout from "@/components/Layout/MainLayout";
 import HeroSection from "./HeroSection";
-import UserMenu from "./UserMenu";
 
-export default async function Home() {
-  const cookieStore = await cookies();
-  const isLogin = cookieStore.get("token");
-
+export default function Home() {
   return (
     <>
-      {/* Header */}
-      <div className="flex items-center justify-between px-8 py-4 border-b bg-[#154D71] text-[#FFF9AF]">
-        {/* Logo */}
-        <h1 className="text-2xl font-bold">My Hotel</h1>
-
-        {/* Nav Menu */}
-        <ul className="flex space-x-6 text-[#FFF9AF] font-medium">
-          <li>
-            <a href="#">Our Room</a>
-          </li>
-          <li>
-            <a href="#">About us</a>
-          </li>
-          <li>
-            <a href="#">Contacts</a>
-          </li>
-        </ul>
-
-        {/* Right Section */}
-        <div className="flex items-center space-x-6 text-[#FFF9AF] font-semibold">
-          {isLogin ? <UserMenu /> : <LoginButton />}
-        </div>
-      </div>
-
-      {/* Body */}
-      <HeroSection />
-      <RoomCard />
-
-      {/* Footer */}
-      <div className="flex items-center justify-center bg-[#154D71]">
-        <p className="text-[#FFF9AF]">
-          &copy; 2023 My Hotel. All rights reserved.
-        </p>
-      </div>
+      <MainLayout>
+        <HeroSection />
+        <RoomCard />
+      </MainLayout>
     </>
   );
 }

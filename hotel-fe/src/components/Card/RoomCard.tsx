@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Room1Image from "../../images/room1.jpeg";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 interface Room {
     roomId: number;
@@ -15,7 +14,6 @@ interface Room {
 
 const RoomCard = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -25,8 +23,6 @@ const RoomCard = () => {
         setRooms(roomResp);
       } catch (error) {
         console.error("Failed to fetch rooms:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -52,7 +48,7 @@ const RoomCard = () => {
               <h3 className="text-lg font-semibold">{room.type}</h3>
               <p className="text-gray-700">{room.price}</p>
               <p className="text-sm text-gray-500">
-                Availability: {room.status ? "Yes" : "No"}
+                Availability: {room.status === "Available" ? "Yes" : "No"}
               </p>
               <div className="flex justify-between items-center mt-4">
                 <div className="flex space-x-2 text-gray-500">
@@ -60,7 +56,7 @@ const RoomCard = () => {
                   <Icon icon="mdi:television" />
                   <Icon icon="mdi:bathtub" />
                 </div>
-                <button className="bg-[#8B6B3F] text-white px-4 py-2 rounded hover:bg-[#6b4f2f]">
+                <button className="bg-[#8B6B3F] text-white px-4 py-2 rounded hover:bg-[#6b4f2f] cursor-pointer">
                   Book now
                 </button>
               </div>

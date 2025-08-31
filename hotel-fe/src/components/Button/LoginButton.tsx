@@ -1,8 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 const LoginButton = () => {
+  const router = useRouter()
+
   const onClick = () => {
-    window.location.href = "/login";
+    router.push("/login");
   };
 
   return (

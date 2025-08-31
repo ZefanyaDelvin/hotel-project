@@ -1,8 +1,8 @@
-"use server"
+"use server";
 
 import { cookies } from "next/headers";
 
-export async function loginAction(email: string, password: string) {
+const loginAction = async (email: string, password: string) => {
   const cookieStore = await cookies();
 
   const res = await fetch(
@@ -32,4 +32,6 @@ export async function loginAction(email: string, password: string) {
   });
 
   return result.data;
-}
+};
+
+export default loginAction;

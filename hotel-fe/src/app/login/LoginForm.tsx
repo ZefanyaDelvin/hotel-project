@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
-import { loginAction } from "../middleware/LoginAction";
+import loginAction from "../middleware/LoginAction";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");

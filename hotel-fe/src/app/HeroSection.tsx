@@ -21,10 +21,10 @@ const HeroSection = () => {
             </p>
 
             <div className="flex items-center gap-4">
-              <button className="bg-yellow-600 text-white px-6 py-3 rounded-lg font-medium shadow hover:bg-yellow-700 transition">
+              <button className="bg-yellow-600 text-white px-6 py-3 rounded-lg font-medium shadow hover:bg-yellow-700 transition cursor-pointer">
                 Book now
               </button>
-              <button className="flex items-center gap-2 border px-6 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition">
+              <button className="flex items-center gap-2 border px-6 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition cursor-pointer">
                 <span>Take a tour</span>
               </button>
             </div>
@@ -64,7 +64,7 @@ const HeroSection = () => {
             <Calendar className="text-yellow-600" />
             <span>13 Mar 2023</span>
           </div>
-          <button className="bg-yellow-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-yellow-700 transition">
+          <button className="bg-yellow-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-yellow-700 transition cursor-pointer">
             Book Now
           </button>
         </div>

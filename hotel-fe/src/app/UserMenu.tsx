@@ -1,19 +1,27 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import logoutAction from "./middleware/LogoutAction";
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/login`, {
-      method: "POST",
-    });
-    router.push("/login");
+    try {
+      const resp = await logoutAction();
+
+      if (resp.success) {
+        window.location.href = "/";
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("An unexpected error occurred");
+      }
+    }
   };
 
   useEffect(() => {
