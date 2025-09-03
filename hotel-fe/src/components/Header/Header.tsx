@@ -10,12 +10,12 @@ const Header = async() => {
   return (
     <>
       {/* Header */}
-      <div className="sticky top-0 z-50 flex items-center justify-between px-8 py-4 border-b bg-[#154D71] text-[#FFF9AF]">
+      <div className="sticky top-0 z-50 flex items-center justify-between px-8 py-4 border-b bg-[#154D71] text-white">
         {/* Logo */}
         <h1 className="text-2xl font-bold">My Hotel</h1>
 
         {/* Nav Menu */}
-        <ul className="flex space-x-6 text-[#FFF9AF] font-medium">
+        <ul className="flex space-x-6 text-white font-medium">
           <li>
             <Link href="/">Home</Link>
           </li>
@@ -31,7 +31,7 @@ const Header = async() => {
         </ul>
 
         {/* Right Section */}
-        <div className="flex items-center space-x-6 text-[#FFF9AF] font-semibold">
+        <div className="flex items-center space-x-6 text-white font-semibold">
           {isLogin ? <UserMenu /> : <LoginButton />}
         </div>
       </div>

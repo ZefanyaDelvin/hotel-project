@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
-import loginAction from "../middleware/LoginAction";
+import loginAction from "../../middleware/LoginAction";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -78,7 +78,7 @@ export default function LoginForm() {
 
         {/* Login button */}
         <button
-          className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50"
+          className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 disabled:opacity-50 cursor-pointer"
           onClick={handleLogin}
           disabled={loading}
         >

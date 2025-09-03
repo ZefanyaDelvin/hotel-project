@@ -2,7 +2,7 @@
 
 import { Icon } from "@iconify/react";
 import { useEffect, useRef, useState } from "react";
-import logoutAction from "./middleware/LogoutAction";
+import logoutAction from "../middleware/LogoutAction";
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
