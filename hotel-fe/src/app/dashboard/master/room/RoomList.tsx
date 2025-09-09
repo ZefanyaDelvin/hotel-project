@@ -17,9 +17,10 @@ interface Room {
 interface RoomListProps {
   appRoom: boolean;
   onEdit: (room: Room) => void;
+  setIsSuccess: (value: boolean) => void;
 }
 
-const RoomList = ({ appRoom, onEdit }: RoomListProps) => {
+const RoomList = ({ appRoom, onEdit, setIsSuccess }: RoomListProps) => {
   const [rooms, setRooms] = useState<Room[]>([]);
 
   const columns = [
@@ -71,6 +72,7 @@ const RoomList = ({ appRoom, onEdit }: RoomListProps) => {
           icon: "success",
           confirmButtonColor: "#154D71",
         });
+        setIsSuccess(true);
       } else {
         console.error("Failed to delete room:", await response.text());
         Swal.fire("Error!", "Failed to delete the room.", "error");

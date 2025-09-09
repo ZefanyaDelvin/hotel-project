@@ -78,8 +78,6 @@ const AddRoom = ({
     }
     setErrors({});
 
-    console.log("Result Error: ", result.error?.errors);
-
     try {
       const formPayload = new FormData();
 

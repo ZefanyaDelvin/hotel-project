@@ -33,20 +33,6 @@ const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
         >
           <Icon icon="mdi:menu" width={24} />
         </button>
-
-        {/* Search bar */}
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search or type command..."
-            className="pl-10 pr-4 py-2 border rounded-lg bg-gray-50 focus:outline-none focus:ring focus:ring-blue-200 text-black"
-          />
-          <Icon
-            icon="mdi:magnify"
-            className="absolute left-3 top-2.5 text-gray-400"
-            width={20}
-          />
-        </div>
       </div>
 
       <div className="flex items-center gap-4 relative" ref={menuRef}>

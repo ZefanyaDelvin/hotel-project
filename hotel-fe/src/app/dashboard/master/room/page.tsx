@@ -62,6 +62,7 @@ const Room = () => {
             setAppEditRoom(true);
             setAppRoom(false);
           }}
+          setIsSuccess={setIsSuccess}
         />
       </div>
       <AddRoom

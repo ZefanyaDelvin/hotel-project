@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 interface EditRoomData {
   roomId?: number;
@@ -78,7 +79,7 @@ const EditRoom = ({
       form.append("status", String(formData.status));
       if (photos) {
         Array.from(photos).forEach((file) => {
-          form.append("photos", file);
+          form.append("photo", file);
         });
       }
       if (video) {
@@ -94,6 +95,13 @@ const EditRoom = ({
       );
 
       if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Room Updated",
+          text: "The room has been updated successfully!",
+          confirmButtonColor: "#154D71",
+        });
+
         setIsSuccess(true);
         setAppEditRoom(false);
         setAppRoom(true);
