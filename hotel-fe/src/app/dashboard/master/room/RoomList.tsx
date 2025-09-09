@@ -1,7 +1,8 @@
 "use client";
 
-import { Icon } from "@iconify/react/dist/iconify.js";
+import CustomTable from "@/components/Table/Table";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 interface Room {
   roomId: number;
@@ -10,14 +11,23 @@ interface Room {
   price: number;
   status: string;
   photoUrl: string | null;
+  videoUrl?: string | null;
 }
 
 interface RoomListProps {
-  appRoom: boolean; // 👈 receive from parent
+  appRoom: boolean;
+  onEdit: (room: Room) => void;
 }
 
-const RoomList = ({ appRoom }: RoomListProps) => {
+const RoomList = ({ appRoom, onEdit }: RoomListProps) => {
   const [rooms, setRooms] = useState<Room[]>([]);
+
+  const columns = [
+    { dataField: "roomNumber", text: "Room Number" },
+    { dataField: "type", text: "Type" },
+    { dataField: "price", text: "Price" },
+    { dataField: "status", text: "Status" },
+  ];
 
   const fetchRooms = async () => {
     try {
@@ -31,6 +41,46 @@ const RoomList = ({ appRoom }: RoomListProps) => {
     }
   };
 
+  const handleDelete = async (room: Room) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#154D71",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/rooms/delete/${room.roomId}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setRooms((prev) => prev.filter((r) => r.roomId !== room.roomId));
+
+        Swal.fire({
+          title: "Deleted!",
+          text: "The room has been deleted.",
+          icon: "success",
+          confirmButtonColor: "#154D71",
+        });
+      } else {
+        console.error("Failed to delete room:", await response.text());
+        Swal.fire("Error!", "Failed to delete the room.", "error");
+      }
+    } catch (error) {
+      console.error("Error deleting room:", error);
+      Swal.fire("Error!", "Something went wrong.", "error");
+    }
+  };
+
   useEffect(() => {
     if (appRoom) {
       fetchRooms();
@@ -38,60 +88,13 @@ const RoomList = ({ appRoom }: RoomListProps) => {
   }, [appRoom]);
 
   return (
-    <div className="overflow-x-auto rounded-lg shadow">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead className="bg-[#154D71] text-white text-sm">
-          <tr>
-            <th className="py-3 px-6 text-left border-b">Room ID</th>
-            <th className="py-3 px-6 text-left border-b">Room Number</th>
-            <th className="py-3 px-6 text-left border-b">Type</th>
-            <th className="py-3 px-6 text-left border-b">Price</th>
-            <th className="py-3 px-6 text-left border-b">Status</th>
-            <th className="py-3 px-6 text-center border-b">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="text-gray-700 text-sm">
-          {rooms.map((room) => (
-            <tr
-              key={room.roomId}
-              className="hover:bg-gray-50 transition-colors"
-            >
-              <td className="py-3 px-6 border-b">{room.roomId}</td>
-              <td className="py-3 px-6 border-b">{room.roomNumber}</td>
-              <td className="py-3 px-6 border-b">{room.type}</td>
-              <td className="py-3 px-6 border-b">
-                Rp {room.price.toLocaleString("id-ID")}
-              </td>
-              <td
-                className={`py-3 px-6 border-b font-medium ${
-                  room.status === "Available"
-                    ? "text-green-600"
-                    : "text-red-600"
-                }`}
-              >
-                {room.status}
-              </td>
-              <td className="py-3 px-6 border-b flex justify-center gap-2">
-                {/* Edit button */}
-                <button
-                  className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition cursor-pointer"
-                  title="Edit"
-                >
-                  <Icon icon="material-symbols:edit" width={20} />
-                </button>
-                {/* Delete button */}
-                <button
-                  className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition cursor-pointer"
-                  title="Delete"
-                >
-                  <Icon icon="material-symbols:delete" width={20} />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <CustomTable
+      columns={columns}
+      data={rooms}
+      showActions
+      onEdit={onEdit}
+      onDelete={handleDelete}
+    />
   );
 };
 

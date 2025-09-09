@@ -5,11 +5,11 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 interface Room {
-    roomId: number;
-    type: string;
-    price: number;
-    status: string;
-    photoUrl: string;
+  roomId: number;
+  type: string;
+  price: number;
+  status: string;
+  photoUrl: string;
 }
 
 const RoomCard = () => {
@@ -37,13 +37,19 @@ const RoomCard = () => {
             key={room.roomId}
             className="bg-white shadow-md rounded-lg overflow-hidden"
           >
-            <Image
-              src={`http://localhost:8000${room.photoUrl}`}
-              alt={room.type}
-              width={400}
-              height={250}
-              className="w-full h-48 object-cover"
-            />
+            {room.photoUrl ? (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_API_URL}${room.photoUrl}`}
+                alt={room.type}
+                width={400}
+                height={250}
+                className="w-full h-48 object-cover"
+              />
+            ) : (
+              <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">
+                No image available
+              </div>
+            )}
             <div className="p-4">
               <h3 className="text-lg font-semibold">{room.type}</h3>
               <p className="text-gray-700">{room.price}</p>

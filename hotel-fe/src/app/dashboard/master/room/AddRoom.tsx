@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import z from "zod";
 
 interface AddRoom {
   roomNumber: number;
@@ -17,9 +18,15 @@ interface AddRoomProps {
   appAddRoom: boolean;
   setAppAddRoom: (value: boolean) => void;
   setAppRoom: (value: boolean) => void;
+  setIsSuccess: (value: boolean) => void;
 }
 
-const AddRoom = ({ appAddRoom, setAppAddRoom, setAppRoom }: AddRoomProps) => {
+const AddRoom = ({
+  appAddRoom,
+  setAppAddRoom,
+  setAppRoom,
+  setIsSuccess,
+}: AddRoomProps) => {
   const [formData, setFormData] = useState<AddRoom>({
     roomNumber: 0,
     type: "",
@@ -31,6 +38,15 @@ const AddRoom = ({ appAddRoom, setAppAddRoom, setAppRoom }: AddRoomProps) => {
 
   const [photos, setPhotos] = useState<FileList | null>(null);
   const [video, setVideo] = useState<File | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Zod Validation Form
+  const roomSchema = z.object({
+    roomNumber: z.number().min(1, "Room number is required"),
+    type: z.string().min(1, "Type is required"),
+    price: z.number().min(1, "Price is required"),
+    status: z.number(),
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -47,6 +63,22 @@ const AddRoom = ({ appAddRoom, setAppAddRoom, setAppRoom }: AddRoomProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const result = roomSchema.safeParse(formData);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      const messageParsed = JSON.parse(result.error.message);
+      messageParsed.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0].toString()] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+    setErrors({});
+
+    console.log("Result Error: ", result.error?.errors);
 
     try {
       const formPayload = new FormData();
@@ -80,8 +112,6 @@ const AddRoom = ({ appAddRoom, setAppAddRoom, setAppRoom }: AddRoomProps) => {
         throw new Error("Failed to create room");
       }
 
-      const result = await response.json();
-
       Swal.fire({
         icon: "success",
         title: "Room Created",
@@ -89,12 +119,28 @@ const AddRoom = ({ appAddRoom, setAppAddRoom, setAppRoom }: AddRoomProps) => {
         confirmButtonColor: "#154D71",
       });
 
+      setIsSuccess(true);
       setAppAddRoom(false);
       setAppRoom(true);
     } catch (err) {
       console.error("Error submitting room:", err);
     }
   };
+
+  useEffect(() => {
+    if (appAddRoom) {
+      setFormData({
+        roomNumber: 0,
+        type: "",
+        price: 0,
+        status: 1,
+        photoUrl: "",
+        videoUrl: "",
+      });
+      setPhotos(null);
+      setVideo(null);
+    }
+  }, [appAddRoom]);
 
   return (
     <div
@@ -110,21 +156,30 @@ const AddRoom = ({ appAddRoom, setAppAddRoom, setAppRoom }: AddRoomProps) => {
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Room Number
+              <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
               name="roomNumber"
               value={formData.roomNumber}
               onChange={handleChange}
-              className="w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 border-[#1c6ea4] focus:ring-[#154D71]"
+              className={`w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                errors.roomNumber
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-[#1c6ea4] focus:ring-[#154D71]"
+              }`}
               required
             />
+            {errors.roomNumber && (
+              <p className="text-red-500 text-sm mt-1">{errors.roomNumber}</p>
+            )}
           </div>
 
           {/* Type */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Type
+              <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -132,24 +187,39 @@ const AddRoom = ({ appAddRoom, setAppAddRoom, setAppRoom }: AddRoomProps) => {
               value={formData.type}
               onChange={handleChange}
               placeholder="e.g. Deluxe, Luxury"
-              className="w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 border-[#1c6ea4] focus:ring-[#154D71]"
+              className={`w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                errors.type
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-[#1c6ea4] focus:ring-[#154D71]"
+              }`}
               required
             />
+            {errors.type && (
+              <p className="text-red-500 text-sm mt-1">{errors.type}</p>
+            )}
           </div>
 
           {/* Price */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Price (Rp)
+              <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
               name="price"
               value={formData.price}
               onChange={handleChange}
-              className="w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 border-[#1c6ea4] focus:ring-[#154D71]"
+              className={`w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${
+                errors.price
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-[#1c6ea4] focus:ring-[#154D71]"
+              }`}
               required
             />
+            {errors.price && (
+              <p className="text-red-500 text-sm mt-1">{errors.price}</p>
+            )}
           </div>
 
           {/* Photos */}
@@ -212,13 +282,13 @@ const AddRoom = ({ appAddRoom, setAppAddRoom, setAppRoom }: AddRoomProps) => {
                 setAppAddRoom(false);
                 setAppRoom(true);
               }}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400"
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#154D71] text-white rounded-md hover:bg-[#1C6EA4]"
+              className="px-4 py-2 bg-[#154D71] text-white rounded-md hover:bg-[#1C6EA4] cursor-pointer"
               onClick={handleSubmit}
             >
               Save Room
