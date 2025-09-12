@@ -120,17 +120,26 @@ const EditUser = ({
 
   useEffect(() => {
     if (appEditUser && selectedUser) {
+      let roleId = 0
+      if (selectedUser.roleId === "admin" || selectedUser.roleId === "Admin") {
+        roleId = 1
+      } else if (selectedUser.roleId === "customer" || selectedUser.roleId === "Customer") {
+        roleId = 2
+      } else if (selectedUser.roleId === "staff" || selectedUser.roleId === "Staff") {
+        roleId = 3
+      }
       setRequestData({
         userName: selectedUser.userName,
         email: selectedUser.email,
         phoneNum: selectedUser.phoneNum,
         address: selectedUser.address,
-        password: selectedUser.password,
-        roleId: selectedUser?.roleId,
+        password: "",
+        roleId: roleId,
       });
     }
   }, [appEditUser, selectedUser]);
 
+  // console.log(requestData.password)
   return (
     <div
       className={`flex justify-center items-center ${

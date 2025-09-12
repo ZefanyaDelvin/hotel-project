@@ -10,7 +10,8 @@ interface Column {
 interface TableProps {
   columns: Column[];
   data: Record<string, any>[];
-  showActions?: boolean;
+  canEdit?: boolean;
+  canDelete?: boolean;
   onEdit?: (row: Record<string, any>) => void;
   onDelete?: (row: Record<string, any>) => void;
 }
@@ -18,7 +19,8 @@ interface TableProps {
 const CustomTable = ({
   columns,
   data,
-  showActions,
+  canEdit,
+  canDelete,
   onEdit,
   onDelete,
 }: TableProps) => {
@@ -32,9 +34,10 @@ const CustomTable = ({
                 {col.text}
               </th>
             ))}
-            {showActions && (
-              <th className="py-3 px-6 text-center border-b">Actions</th>
-            )}
+            {canEdit ||
+              (canDelete && (
+                <th className="py-3 px-6 text-center border-b">Actions</th>
+              ))}
           </tr>
         </thead>
 
@@ -43,7 +46,7 @@ const CustomTable = ({
             data.map((row, rowIndex) => (
               <tr
                 key={rowIndex}
-                className="hover:bg-gray-50 transition-colors last:border-b"
+                className="hover:bg-gray-50 transition-colors "
               >
                 {columns.map((col) => (
                   <td
@@ -57,30 +60,51 @@ const CustomTable = ({
                   </td>
                 ))}
 
-                {showActions && row._canEditDelete && (
-                  <td className="py-3 px-6 border-b flex justify-center gap-2">
+                <td className="py-3 px-6 border-b flex justify-center gap-2">
+                  {/* Edit Button */}
+                  {canEdit && (
                     <button
-                      className="p-2 bg-[#154D71] hover:bg-[#1c6ea4] text-white rounded-full transition cursor-pointer"
-                      title="Edit"
-                      onClick={() => onEdit && onEdit(row)}
+                      className={`p-2 rounded-full transition cursor-pointer ${
+                        row._canEditDelete
+                          ? "bg-[#154D71] hover:bg-[#1c6ea4] text-white"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                      title={row._canEditDelete ? "Edit" : "Cannot edit"}
+                      onClick={() =>
+                        row._canEditDelete && onEdit && onEdit(row)
+                      }
+                      disabled={!row._canEditDelete}
                     >
                       <Icon icon="material-symbols:edit" width={15} />
                     </button>
+                  )}
+
+                  {/* Delete Button */}
+                  {canDelete && (
                     <button
-                      className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition cursor-pointer"
-                      title="Delete"
-                      onClick={() => onDelete && onDelete(row)}
+                      className={`p-2 rounded-full transition cursor-pointer ${
+                        row._canEditDelete
+                          ? "bg-red-500 hover:bg-red-600 text-white"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                      title={
+                        row._canEditDelete ? "Delete" : "Cannot delete"
+                      }
+                      onClick={() =>
+                        row._canEditDelete && onDelete && onDelete(row)
+                      }
+                      disabled={!row._canEditDelete}
                     >
                       <Icon icon="material-symbols:delete" width={15} />
                     </button>
-                  </td>
-                )}
+                  )}
+                </td>
               </tr>
             ))
           ) : (
             <tr>
               <td
-                colSpan={columns.length + (showActions ? 1 : 0)}
+                colSpan={columns.length + (canEdit && canDelete ? 1 : 0)}
                 className="text-center py-4 text-gray-500"
               >
                 No data available

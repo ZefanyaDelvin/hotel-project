@@ -115,6 +115,16 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+exports.deleteUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await prisma.user.delete({ where: { userId: id } });
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
 exports.logoutUser = (req, res) => {
   res.clearCookie("token");
   res.status(200).json({ message: "Logout successful" });

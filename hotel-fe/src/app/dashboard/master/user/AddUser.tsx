@@ -172,7 +172,6 @@ const AddUser = ({
               name="email"
               value={requestData.email}
               onChange={handleChange}
-              placeholder="e.g. Deluxe, Luxury"
               className={`w-full mt-1 px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 ${
                 errors.email
                   ? "border-red-500 focus:ring-red-500"

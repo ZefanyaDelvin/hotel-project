@@ -122,7 +122,8 @@ const UserList = ({ appUser, onEdit, setIsSuccess }: UserListProps) => {
     <CustomTable
       columns={columns}
       data={users}
-      showActions={permitted ? true : false}
+      canEdit={false}
+      canDelete={true}
       onEdit={handleEdit}
       onDelete={handleDelete}
     />
