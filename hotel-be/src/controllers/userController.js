@@ -12,7 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 exports.getAllUsers = async (req, res) => {
   const users = await prisma.user.findMany();
-  res.json(users);
+  res.status(200).json(users);
 };
 
 exports.createUser = async (req, res) => {
@@ -52,6 +52,12 @@ exports.createUser = async (req, res) => {
 
     // don’t send password back to client
     const { password: _, ...userWithoutPassword } = newUser;
+
+    const token = jwt.sign(
+      { id: newUser.id, roleId: newUser.roleId },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     res.cookie("token", token, {
       httpOnly: true,

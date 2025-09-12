@@ -41,17 +41,26 @@ const CustomTable = ({
         <tbody className="text-gray-700 text-sm">
           {data.length > 0 ? (
             data.map((row, rowIndex) => (
-              <tr key={rowIndex} className="hover:bg-gray-50 transition-colors">
+              <tr
+                key={rowIndex}
+                className="hover:bg-gray-50 transition-colors last:border-b"
+              >
                 {columns.map((col) => (
-                  <td key={col.dataField} className="py-3 px-6 border-b">
-                    {row[col.dataField]}
+                  <td
+                    key={col.dataField}
+                    className="py-3 px-6 border-b"
+                    title={String(row[col.dataField] ?? "")}
+                  >
+                    {col.dataField === "userId"
+                      ? String(row[col.dataField]).slice(0, 8) + "..."
+                      : row[col.dataField]}
                   </td>
                 ))}
 
-                {showActions && (
+                {showActions && row._canEditDelete && (
                   <td className="py-3 px-6 border-b flex justify-center gap-2">
                     <button
-                      className="p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition cursor-pointer"
+                      className="p-2 bg-[#154D71] hover:bg-[#1c6ea4] text-white rounded-full transition cursor-pointer"
                       title="Edit"
                       onClick={() => onEdit && onEdit(row)}
                     >
