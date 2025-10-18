@@ -1,10 +1,26 @@
 "use client";
 
-import { Calendar, MapPin, User, Bed, Wifi, Coffee, Dumbbell, Car, Gamepad2, Sun, WashingMachine, Waves } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  User,
+  Bed,
+  Wifi,
+  Coffee,
+  Dumbbell,
+  Car,
+  Gamepad2,
+  Sun,
+  WashingMachine,
+  Waves,
+} from "lucide-react";
 import Image from "next/image";
 import Room1Image from "../images/room1.jpeg";
+import { useRouter } from "next/navigation";
 
 const HeroSection = () => {
+  const router = useRouter();
+
   return (
     <>
       {/* Hero */}
@@ -21,7 +37,12 @@ const HeroSection = () => {
             </p>
 
             <div className="flex items-center gap-4">
-              <button className="bg-yellow-600 text-white px-6 py-3 rounded-lg font-medium shadow hover:bg-yellow-700 transition cursor-pointer">
+              <button
+                onClick={() => {
+                  router.push("/room");
+                }}
+                className="bg-yellow-600 text-white px-6 py-3 rounded-lg font-medium shadow hover:bg-yellow-700 transition cursor-pointer"
+              >
                 Book now
               </button>
               <button className="flex items-center gap-2 border px-6 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition cursor-pointer">
@@ -83,14 +104,40 @@ const HeroSection = () => {
 
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { icon: <Waves className="h-10 w-10 text-yellow-600 mx-auto" />, label: "Swimming Pool" },
-            { icon: <Wifi className="h-10 w-10 text-yellow-600 mx-auto" />, label: "Wifi" },
-            { icon: <Coffee className="h-10 w-10 text-yellow-600 mx-auto" />, label: "Breakfast" },
-            { icon: <Dumbbell className="h-10 w-10 text-yellow-600 mx-auto" />, label: "Gym" },
-            { icon: <Gamepad2 className="h-10 w-10 text-yellow-600 mx-auto" />, label: "Game Center" },
-            { icon: <Sun className="h-10 w-10 text-yellow-600 mx-auto" />, label: "24/7 Light" },
-            { icon: <WashingMachine className="h-10 w-10 text-yellow-600 mx-auto" />, label: "Laundry" },
-            { icon: <Car className="h-10 w-10 text-yellow-600 mx-auto" />, label: "Parking Space" },
+            {
+              icon: <Waves className="h-10 w-10 text-yellow-600 mx-auto" />,
+              label: "Swimming Pool",
+            },
+            {
+              icon: <Wifi className="h-10 w-10 text-yellow-600 mx-auto" />,
+              label: "Wifi",
+            },
+            {
+              icon: <Coffee className="h-10 w-10 text-yellow-600 mx-auto" />,
+              label: "Breakfast",
+            },
+            {
+              icon: <Dumbbell className="h-10 w-10 text-yellow-600 mx-auto" />,
+              label: "Gym",
+            },
+            {
+              icon: <Gamepad2 className="h-10 w-10 text-yellow-600 mx-auto" />,
+              label: "Game Center",
+            },
+            {
+              icon: <Sun className="h-10 w-10 text-yellow-600 mx-auto" />,
+              label: "24/7 Light",
+            },
+            {
+              icon: (
+                <WashingMachine className="h-10 w-10 text-yellow-600 mx-auto" />
+              ),
+              label: "Laundry",
+            },
+            {
+              icon: <Car className="h-10 w-10 text-yellow-600 mx-auto" />,
+              label: "Parking Space",
+            },
           ].map((facility, i) => (
             <div
               key={i}
