@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Icon } from "@iconify/react";
+import logoutAction from "@/middleware/LogoutAction";
 
 interface HeaderProps {
   isSidebarOpen: boolean;
@@ -22,6 +23,21 @@ const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logoutAction();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        if (err.message.includes("NEXT_REDIRECT")) {
+          return;
+        }
+        console.error("Logout error:", err.message);
+      } else {
+        console.error("An unexpected error occurred during logout");
+      }
+    }
+  };
 
   return (
     <header className="flex items-center justify-between bg-[#1C6EA4] border-b px-6 py-4 shadow-sm text-white relative">
@@ -88,7 +104,10 @@ const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
               </button>
             </div>
             <hr className="my-2" />
-            <button className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-gray-100 text-left text-red-600">
+            <button
+              className="flex items-center gap-2 w-full px-3 py-2 rounded-lg hover:bg-gray-100 text-left text-red-600 cursor-pointer"
+              onClick={handleLogout}
+            >
               <Icon icon="mdi:logout" width={20} />
               Sign out
             </button>

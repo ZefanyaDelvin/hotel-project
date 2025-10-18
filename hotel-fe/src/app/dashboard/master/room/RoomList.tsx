@@ -26,7 +26,11 @@ const RoomList = ({ appRoom, onEdit, setIsSuccess }: RoomListProps) => {
   const columns = [
     { dataField: "roomNumber", text: "Room Number" },
     { dataField: "type", text: "Type" },
-    { dataField: "price", text: "Price" },
+    {
+      dataField: "price",
+      text: "Price",
+      formatter: (value: number) => `$${value.toLocaleString()}`,
+    },
     { dataField: "status", text: "Status" },
   ];
 
@@ -93,9 +97,12 @@ const RoomList = ({ appRoom, onEdit, setIsSuccess }: RoomListProps) => {
     <CustomTable
       columns={columns}
       data={rooms}
-      showActions
+      canEdit={true}
+      canDelete={true}
       onEdit={onEdit}
       onDelete={handleDelete}
+      // No checkCanEdit/checkCanDelete = all rows can be edited/deleted
+      emptyMessage="No rooms available"
     />
   );
 };

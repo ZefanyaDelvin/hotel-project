@@ -4,6 +4,8 @@ import { useState } from "react";
 import DashboardFooter from "@/components/Footer/DashboardFooter";
 import DashboardHeader from "@/components/Header/DashboardHeader";
 import DashboardSidebar from "@/components/Sidebar/DashboardSidebar";
+import { useRouter } from "next/navigation";
+
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -11,6 +13,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const router = useRouter()
 
   return (
     <div className="flex min-h-screen">

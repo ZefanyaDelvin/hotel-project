@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const logoutAction = async () => {
   const cookieStore = await cookies();
@@ -13,7 +14,7 @@ const logoutAction = async () => {
   cookieStore.delete("token");
   cookieStore.delete("roleId");
 
-  return { success: true, message: "Logged out successfully" };
+  redirect("/");
 }
 
 export default logoutAction

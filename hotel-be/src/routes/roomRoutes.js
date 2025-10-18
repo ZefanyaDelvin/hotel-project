@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const roomController = require("../controllers/roomController.js");
-const upload = require("../middleware/upload");
+const upload = require("../models/middleware/upload.js");
 
 router.get("/", roomController.getAllRooms);
 router.post(

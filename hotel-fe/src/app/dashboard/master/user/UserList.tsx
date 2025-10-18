@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 interface User {
-  userId: number;
+  userId: string;
   userName: string;
   email: string;
   phoneNum: string;
   address: string;
-  roleId: number | string; // number from API, mapped to string later
+  roleId: number | string;
+  _originalRoleId?: number;
 }
 
 interface UserListProps {
@@ -21,10 +22,16 @@ interface UserListProps {
 
 const UserList = ({ appUser, onEdit, setIsSuccess }: UserListProps) => {
   const [users, setUsers] = useState<User[]>([]);
-  const [permitted, setPermitted] = useState(true);
 
   const columns = [
-    { dataField: "userId", text: "User ID" },
+    {
+      dataField: "userId",
+      text: "User ID",
+      formatter: (value: string) => {
+        const truncated = String(value).slice(0, 8) + "...";
+        return <span title={value}>{truncated}</span>;
+      },
+    },
     { dataField: "userName", text: "User Name" },
     { dataField: "email", text: "Email" },
     { dataField: "phoneNum", text: "Phone Number" },
@@ -49,7 +56,6 @@ const UserList = ({ appUser, onEdit, setIsSuccess }: UserListProps) => {
         ...user,
         roleId: roleMap[user.roleId] || "Unknown",
         _originalRoleId: user.roleId,
-        _canEditDelete: user.roleId !== 2, // 👈 only allow if not Customer
       }));
 
       setUsers(mappedData);
@@ -58,12 +64,16 @@ const UserList = ({ appUser, onEdit, setIsSuccess }: UserListProps) => {
     }
   };
 
-  const handleDelete = async (user: any) => {
-    if (user._originalRoleId === 2) {
-      setPermitted(false);
-      return;
-    }
+  // Logic: Only roleId !== 2 (non-customers) can be edited/deleted
+  const canModifyUser = (user: User) => {
+    return user._originalRoleId !== 2;
+  };
 
+  const handleEdit = (user: User) => {
+    onEdit(user);
+  };
+
+  const handleDelete = async (user: User) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -104,14 +114,6 @@ const UserList = ({ appUser, onEdit, setIsSuccess }: UserListProps) => {
     }
   };
 
-  const handleEdit = (user: any) => {
-    if (user._originalRoleId === 2) {
-      setPermitted(false);
-      return;
-    }
-    onEdit(user);
-  };
-
   useEffect(() => {
     if (appUser) {
       fetchUser();
@@ -122,10 +124,13 @@ const UserList = ({ appUser, onEdit, setIsSuccess }: UserListProps) => {
     <CustomTable
       columns={columns}
       data={users}
-      canEdit={false}
+      canEdit={true}
       canDelete={true}
       onEdit={handleEdit}
       onDelete={handleDelete}
+      checkCanEdit={canModifyUser}
+      checkCanDelete={canModifyUser}
+      emptyMessage="No users found"
     />
   );
 };

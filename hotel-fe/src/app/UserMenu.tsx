@@ -6,20 +6,23 @@ import logoutAction from "../middleware/LogoutAction";
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
     try {
-      const resp = await logoutAction();
-
-      if (resp.success) {
-        window.location.href = "/";
-      }
+      setIsLoggingOut(true);
+      await logoutAction();
     } catch (err: unknown) {
+      setIsLoggingOut(false);
       if (err instanceof Error) {
-        alert(err.message);
+        if (err.message.includes("NEXT_REDIRECT")) {
+          return;
+        }
+        console.error("Logout error:", err.message);
       } else {
-        alert("An unexpected error occurred");
+        console.error("An unexpected error occurred during logout");
       }
     }
   };
@@ -48,6 +51,7 @@ export default function UserMenu() {
       <button
         onClick={() => setOpen(!open)}
         className="border-2 border-transparent rounded-full p-2 hover:border-2 hover:border-gray-400 cursor-pointer"
+        disabled={isLoggingOut}
       >
         <Icon icon="mdi:user" width="24" height="24" />
       </button>
@@ -57,9 +61,10 @@ export default function UserMenu() {
         <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg z-10">
           <button
             onClick={handleLogout}
-            className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 text-gray-900 cursor-pointer"
+            className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 text-red-600 cursor-pointer"
+            disabled={isLoggingOut}
           >
-            Logout
+            {isLoggingOut ? "Logging out..." : "Logout"}
           </button>
         </div>
       )}

@@ -24,8 +24,9 @@ export default function LoginForm() {
       } else {
         router.push("/");
       }
+      router.refresh();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : "Unexpected error");
+      console.log(err instanceof Error ? err.message : "Unexpected error");
     } finally {
       setLoading(false);
     }
