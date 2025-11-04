@@ -12,7 +12,11 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 exports.getAllUsers = async (req, res) => {
   const users = await prisma.user.findMany();
-  res.status(200).json(users);
+  try {
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 exports.createUser = async (req, res) => {
